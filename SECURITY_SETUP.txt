@@ -1,0 +1,28 @@
+KALP BIRTHDAY — SECURITY HARDENING
+
+This build adds Cloudflare Pages security headers, HTTPS enforcement, clickjacking protection,
+a restrictive permissions policy, referrer protection, robots exclusion, and safer frontend
+validation before sending responses to the Google Apps Script endpoint.
+
+IMPORTANT:
+1. The Google Apps Script /exec URL is public and must be treated as public. Do NOT put passwords,
+   API keys, service-account JSON, or other secrets in index.html.
+2. Client-side validation/rate limiting is only a convenience layer. The Apps Script must validate
+   every incoming request server-side. In particular, it should:
+   - accept only POST requests;
+   - reject oversized request bodies;
+   - whitelist type = progress/reply/answer;
+   - cap visitorId/reply lengths;
+   - accept choice only yes/no;
+   - clamp numeric fields;
+   - write only to the intended sheet;
+   - never execute/evaluate submitted strings as code;
+   - optionally apply server-side rate limiting if abuse becomes an issue.
+3. Keep the Google Sheet itself private. Do not publish it to the web.
+4. After deploying to Cloudflare Pages, test the response form and Google Sheet.
+5. No website can be made literally "unhackable"; this build removes common, realistic attack
+   surfaces for a small static birthday site.
+
+CLOUDFLARE:
+Upload this folder/ZIP as a Pages direct-upload project. The _headers file is intended for
+Cloudflare Pages and supplies the security headers.
